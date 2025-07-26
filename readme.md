@@ -11,10 +11,10 @@ This chatbot has the following features:
 2. Open a terminal and navigate to the repository folder
 
 3. Run the following to create and activate a virtual environment. \
-   `python venv venv` \
-   `./venv/activate`
+   `python -m venv .venv` \
+   `.venv\Scripts\activate`
 
-4. Run `pip install requirements.txt` to install dependencies.
+4. Run `pip install -r requirements.txt` to install dependencies.
 
 5. Place ffmpeg.exe in bin/ffmpeg/ffmpeg.exe. FFmpeg can be downloaded here: https://www.ffmpeg.org/download.html.
 

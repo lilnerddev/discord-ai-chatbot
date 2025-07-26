@@ -10,23 +10,11 @@ import os
 FFMPEG_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "bin", "ffmpeg", "ffmpeg.exe"))
 
 class Music(commands.Cog):
-    """A class that allows provides slash commands to queue, play, skip, resume and stop tracks."""
+    """A class that provides slash commands to queue, play, skip, resume and stop tracks."""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.song_queues = {} # Create a Dictionary of queues for queueing songs for each guild/server
-
-    async def cog_load(self):
-        """
-        This method is an aysnc lifecycle hook that runs after the Cog is added to the bot.
-        Since slash commands defined inside a cog are not automatically registered in the bot's 
-        command tree, we must register them here.
-        """
-        # self.bot.tree.add_command(self.play)
-        # self.bot.tree.add_command(self.skip)
-        # self.bot.tree.add_command(self.pause)
-        # self.bot.tree.add_command(self.stop)
-        # self.bot.tree.add_command(self.resume)
 
     @staticmethod
     def _extract(query, ydl_opts):
@@ -208,7 +196,6 @@ class Music(commands.Cog):
             self.song_queues[guild_id] = deque()
 
 
-# Attach cog
 async def setup(bot: commands.Bot):
     """
     Adds the cog to the bot. This should be defined at the 
