@@ -51,7 +51,6 @@ async def on_message(message):
         for mention in message.mentions:
             user_message = user_message.replace(f"<@{mention.id}>", "")
             user_message = user_message.replace(f"<@!{mention.id}>", "")  # sometimes with ! in mention
-        user_message = user_message.strip()
     
         # Get cog instance
         openai_cog = bot.get_cog("OpenAICog")

@@ -5,3 +5,4 @@ bin/
 # Ignore python bytecode
 *.pyc
 __pycache__/
+project_requirements.md
