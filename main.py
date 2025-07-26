@@ -36,14 +36,37 @@ async def on_ready():
 
 
 @bot.event
-async def on_message(msg):
-    print(msg.guild.id)
-    ## TODO reply with llm if bot is mentioned 
-    if (msg.author.id != bot.user.id):
-        await msg.channel.send(f"Interesting message, {msg.author.mention}")
+async def on_message(message):
+    if message.author.bot:
+        return
+    
+    print(f"User message: {message}")
 
-    # Allow bot to finish processing commands.
-    await bot.process_commands(msg)
+    # Check if the bot is mentioned in the message
+    if bot.user in message.mentions:
+
+        # Remove the mention text from the message content
+        # For example: "<@bot_id> hello" -> "hello"
+        user_message = message.content
+        for mention in message.mentions:
+            user_message = user_message.replace(f"<@{mention.id}>", "")
+            user_message = user_message.replace(f"<@!{mention.id}>", "")  # sometimes with ! in mention
+        user_message = user_message.strip()
+    
+        # Get cog instance
+        openai_cog = bot.get_cog("OpenAICog")
+        if not openai_cog:
+            await message.channel.send(f"Error: unable to access my AI cog.")
+            return
+        
+        # Get AI response
+        async with message.channel.typing():
+            reply = await openai_cog.getAIResponse(user_message)
+            print(f"AI response: {reply}")
+            await message.reply(reply, mention_author=False)
+
+    # Process any commands (e.g. !...) inside the message
+    await bot.process_commands(message)
 
 
 @bot.tree.command(name="greet", description="Sends a greeting to the user")

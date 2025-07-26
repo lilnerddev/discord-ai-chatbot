@@ -4,32 +4,40 @@ from discord import app_commands
 from openai import OpenAI
 import asyncio
 import os
+from config import SYSTEM_PROMPT
 
 class OpenAICog(commands.Cog):
     """A class that provides the ability to send and recieve messages from an LLM (currently only supports OpenAI)."""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.client = OpenAI() # Expects OPENAI_API_KEY in env
+        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY")) # Expects OPENAI_API_KEY in env
 
     @app_commands.command(name="talk", description="Talk to this discord bot")
     async def talk(self, interaction: discord.Interaction, message: str):
         await interaction.response.defer()  # thinking indicator
+        reply = await self.getAIResponse(message)
+        await interaction.followup.send(reply)
 
+    
+    async def getAIResponse(self, user_message: str) -> str:
         try:
             response = await asyncio.to_thread(
                 self.client.chat.completions.create,
                 model="gpt-4o-mini",
                 messages=[
-                    {"role": "system", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": message},
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": user_message},
                 ]
             )
-            answer = response.choices[0].message.content
-            await interaction.followup.send(answer)
+            print(f"Total tokens: {response.usage.total_tokens} (prompt: {response.usage.prompt_tokens}, completion: {response.usage.completion_tokens})")
+            reply = response.choices[0].message.content
+            return reply
+
         except Exception as e:
-            print(f"OpenAICog error: {e}")
-            await interaction.followup.send(f"Error: {e}")
+            error = f"OpenAICog error in getAIResponse: {e}"
+            print(error)
+            return error
 
 async def setup(bot: commands.Bot):
     """

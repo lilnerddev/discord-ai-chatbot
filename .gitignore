@@ -1,4 +1,7 @@
 data/
 bin/
 .env
-/cogs/__pycache__
+
+# Ignore python bytecode
+*.pyc
+__pycache__/
