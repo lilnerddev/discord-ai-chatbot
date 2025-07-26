@@ -1,0 +1,4 @@
+data/
+bin/
+.env
+/cogs/__pycache__
